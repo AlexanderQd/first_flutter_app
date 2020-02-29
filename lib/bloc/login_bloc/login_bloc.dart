@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import './bloc.dart';
-import '../../logics/login_logic.dart';
+import '../../services/auth_service.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final LoginLogic logic;
-  LoginBloc({@required this.logic});
+  final AuthLogic authService;
+  LoginBloc({@required this.authService});
 
   @override
   LoginState get initialState => InitialLoginState();
@@ -19,7 +19,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LogginInBlocState();
 
       try {
-        var token = await logic.login(event.email, event.password);
+        var token = await authService.login(event.email, event.password);
         yield LoggedInBlocState(token);
       } on LoginException {
           yield LoggedInErrorBlocState('No se pudo loguear');

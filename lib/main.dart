@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterapp/logics/login_logic.dart';
+import 'package:flutterapp/screens/welcome_screen.dart';
 import 'bloc/login_bloc/bloc.dart';
+import 'services/auth_service.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-          create: (_) => LoginBloc(logic: SimpleLoginLogic()),
+          create: (_) => LoginBloc(authService: AuthService()),
           child: MyHomePage(title: 'Flutter Demo Home Page')),
     );
   }
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (state is LoggedInErrorBlocState) {
                   _showError(context, state.message);
                 } else if (state is LoggedInBlocState){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MainPage()));
+//                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => WelcomeScreen()));
                 }
               },
               child: BlocBuilder<LoginBloc, LoginState>(
@@ -89,16 +90,5 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _showError(BuildContext context, String message) {
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
-}
-
-class MainPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(title: Text('Main')),
-      body: Center(child: Text('Estas dentro'))
-    );
   }
 }
