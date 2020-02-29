@@ -52,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (state is LoggedInErrorBlocState) {
                   _showError(context, state.message);
                 } else if (state is LoggedInBlocState){
-//                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => WelcomeScreen()));
+//                  _showError(context, state.token);
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => WelcomeScreen()));
                 }
               },
               child: BlocBuilder<LoginBloc, LoginState>(

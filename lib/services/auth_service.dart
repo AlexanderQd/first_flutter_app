@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutterapp/environments/dev_env.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class AuthLogic {
   Future<String> login(String email, String password);
@@ -31,19 +32,27 @@ class SimpleLoginLogic extends AuthLogic {
 
 class AuthService extends AuthLogic {
   String url = DEV_ENV['api'] + DEV_ENV['login'];
+  final storage = new FlutterSecureStorage();
+
   var headers = { 'Content-Type': 'application/json',
     'Authorization': 'Bearer '};
   @override
   Future<String> login(String email, String password) async {
     var body = jsonEncode({'email': email, 'password': password});
     var response = await http.post(url, body: body, headers: headers);
-
     var jsonResponse =  jsonDecode(response.body);
     if (response == null || !jsonResponse['success']) {
       throw LoginException();
     }
 
-    return jsonResponse;
+    var data = jsonResponse['data'];
+
+
+    await storage.write(key: 'user_id', value: data['user']['id'].toString());
+    await storage.write(key: 'user_name', value: data['user']['name']);
+    await storage.write(key: 'token', value: data['token']);
+
+    return jsonResponse['message'];
   }
 
   @override
